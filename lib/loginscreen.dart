@@ -107,10 +107,10 @@ class _LoginScreenState extends State<LoginScreen> {
           fontFamily: "NexaBold",
         ),
       ),
-    );
-  }
+    );}
 
   Widget customField(String hint, TextEditingController controller, bool obscure){
+    IconData iconData = obscure ? Icons.lock : Icons.person; //Note The iconData variable is determined based on the obscure parameter.If obscure is true, Icons.lock is used for the password field.Otherwise, Icons.person is used for password fields.
     return Container(
       width: screenWidth,
       margin: const EdgeInsets.only(bottom: 12),
@@ -130,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Container(
             width: screenWidth / 6,
             child: Icon(
-              Icons.person,
+              iconData, // Note Icons.person,
               color: primary,
               size: screenWidth / 15,
             ),
@@ -158,5 +158,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
 
 }
