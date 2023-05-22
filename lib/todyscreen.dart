@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:gradient_slide_to_act/gradient_slide_to_act.dart';
 
 class TodayScreen extends StatefulWidget {
   const TodayScreen({Key? key}) : super(key: key);
@@ -158,7 +158,45 @@ class _TodayScreenState extends State<TodayScreen> {
                 ),
               ),
             ),
+            Container(
+              margin: EdgeInsets.only(top: 24),
+              height: 65,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(2 ,2),
+                  )
+                ],
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+              ),
+              child: Builder(
+                  builder: (context) {
+                    return GradientSlideToAct(
+                      width: screenWidth ,
+                      dragableIcon: Icons.arrow_forward,
+                      text: "Slide to Check In",
+                      textStyle: TextStyle(
+                        color: Colors.black54,
+                        fontSize: screenWidth/20,
+                        fontFamily: "NexaRegular",
+                      ),
+                      backgroundColor: Colors.white,
 
+                      gradient:const LinearGradient(
+                          begin: Alignment.centerLeft,
+                          colors: [
+                            Colors.red,
+                            Colors.purple,
+                          ],
+                      ),
+                      onSubmit:  (){},
+                    );
+                  }
+              ),
+            ),
           ],
         ),
       )
