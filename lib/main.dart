@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'model/user.dart';
 //import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -56,6 +58,7 @@ class _AuthCheckState extends State<AuthCheck> {
     try {
       if(sharedPreferences.getString('employeeId') != null){
         setState(() {
+          User.username = sharedPreferences.getString('employeeId')!;
           userAvailable = true;
         });
       }
