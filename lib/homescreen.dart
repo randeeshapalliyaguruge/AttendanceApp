@@ -1,6 +1,8 @@
 import 'package:attendance_app/calenderscreen.dart';
+import 'package:attendance_app/model/user.dart';
 import 'package:attendance_app/profilescreen.dart';
 import 'package:attendance_app/todyscreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -17,13 +19,31 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Color primary = const Color(0xffeef444c);
 
-  int currentIndex = 1;
+  int currentIndex = 1;    //Todo change this to 1 I personally changed it
 
   List<IconData> navigationIcons = [
     FontAwesomeIcons.calendarAlt,
     FontAwesomeIcons.check,
     FontAwesomeIcons.user,
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    getId();
+  }
+
+  void getId() async {
+    QuerySnapshot snap = await FirebaseFirestore.instance
+        .collection("Employee")
+        .where('id' , isEqualTo: User.employeeId)
+        .get();
+
+    setState(() {
+      User.id = snap.docs[0].id;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +53,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: IndexedStack(
         index: currentIndex,
-        children: const [
-          CalenderScreen(),
-          TodayScreen(),
-          ProfileScreen(),
+        children: [
+          new CalenderScreen(),
+          new TodayScreen(),
+          new ProfileScreen(),
         ],
       ),
       bottomNavigationBar: Container(
