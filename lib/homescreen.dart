@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Color primary = const Color(0xffeef444c);
 
-  int currentIndex = 1;    //Todo change this to 1 I personally changed it
+  int currentIndex = 2;    //Todo change this to 1 I personally changed it
 
   List<IconData> navigationIcons = [
     FontAwesomeIcons.calendarAlt,
@@ -31,27 +31,52 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _startLocationService();
-    getId();
-  }
-
-  void _startLocationService() async {
-    LocationService().initialize();
-
-    LocationService().getLongitude().then((value) {
-      setState(() {
-        User.long = value!;
-      });
-
-      LocationService().getLatitude().then((value) {
-        setState(() {
-          User.lat  = value!;
-        });
-      });
+   //_startLocationService();
+    getId().then((value) {
+      _getCredentials();
+      _getProfilePic();
     });
   }
 
-  void getId() async {
+  void _getCredentials() async {
+    try{
+      DocumentSnapshot doc = await FirebaseFirestore.instance.collection("Employee").doc(User.id).get();
+      setState(() {
+        User.canEdit = doc['canEdit'];
+        User.firstName = doc['firstName'];
+        User.lastName = doc['lastName'];
+        User.birthDate = doc['birthDate'];
+        User.address = doc['address'];
+      });
+    } catch(e) {
+      return;
+    }
+  }
+
+  void _getProfilePic() async {
+    DocumentSnapshot doc = await FirebaseFirestore.instance.collection("Employee").doc(User.id).get();
+    setState(() {
+      User.profilePicLink = doc['profilePic'];
+    });
+  }
+
+  // void _startLocationService() async {
+  //   LocationService().initialize();
+  //
+  //   LocationService().getLongitude().then((value) {
+  //     setState(() {
+  //       User.long = value!;
+  //     });
+  //
+  //     LocationService().getLatitude().then((value) {
+  //       setState(() {
+  //         User.lat  = value!;
+  //       });
+  //     });
+  //   });
+  // }
+
+  Future<void> getId() async {
     QuerySnapshot snap = await FirebaseFirestore.instance
         .collection("Employee")
         .where('id' , isEqualTo: User.employeeId)
