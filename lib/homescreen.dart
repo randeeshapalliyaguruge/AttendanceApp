@@ -3,9 +3,11 @@ import 'package:attendance_app/model/user.dart';
 import 'package:attendance_app/profilescreen.dart';
 import 'package:attendance_app/services/location_service.dart';
 import 'package:attendance_app/todyscreen.dart';
+import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+CameraController? _cameraController;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -20,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Color primary = const Color(0xffeef444c);
 
-  int currentIndex = 2;    //Todo change this to 1 I personally changed it
+  int currentIndex = 1;    //Todo change this to 1 I personally changed it
 
   List<IconData> navigationIcons = [
     FontAwesomeIcons.calendarAlt,
@@ -31,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    initializeCamera();
    //_startLocationService();
     getId().then((value) {
       _getCredentials();
@@ -75,6 +78,19 @@ class _HomeScreenState extends State<HomeScreen> {
   //     });
   //   });
   // }
+
+  List<CameraDescription> cameras = [];
+
+  Future<void> initializeCamera() async {
+    cameras = await availableCameras();
+    // Select the first camera in the list
+    CameraController controller = CameraController(cameras[0], ResolutionPreset.high);
+    await controller.initialize();
+    setState(() {
+      // Assign the initialized camera controller to a variable
+      _cameraController = controller;
+    });
+  }
 
   Future<void> getId() async {
     QuerySnapshot snap = await FirebaseFirestore.instance

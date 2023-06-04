@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -5,12 +6,14 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
 import 'model/user.dart';
+CameraController? _cameraController;
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
+
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
@@ -22,31 +25,85 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  bool showRemoveButton = false;
 
   void pickUploadProfilePic() async {
-    final image = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      maxHeight: 512,
-      maxWidth: 512,
-      imageQuality: 90,
+    final imageSource = await showDialog<ImageSource>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Select Image Source"),
+          actions: <Widget>[
+            TextButton(
+              child: Text("Camera"),
+              onPressed: () {
+                Navigator.pop(context, ImageSource.camera);
+              },
+            ),
+            TextButton(
+              child: Text("Gallery"),
+              onPressed: () {
+                Navigator.pop(context, ImageSource.gallery);
+              },
+            ),
+          ],
+        );
+      },
     );
 
+    if (imageSource != null) {
+      final picker = ImagePicker();
+      final image = await picker.pickImage(
+        source: imageSource,
+        maxHeight: 512,
+        maxWidth: 512,
+        imageQuality: 90,
+      );
+
+      if (image != null) {
+        Reference ref = FirebaseStorage.instance
+            .ref()
+            .child("${User.employeeId.toLowerCase()}_profilepic.jpg");
+
+        await ref.putFile(File(image.path));
+
+        ref.getDownloadURL().then((value) async {
+          setState(() {
+            User.profilePicLink = value;
+            showRemoveButton = true;
+          });
+
+          await FirebaseFirestore.instance
+              .collection("Employee")
+              .doc(User.id)
+              .update({
+            'profilePic': value,
+          });
+        });
+      }
+    }
+  }
+
+  void removeProfilePic() async {
     Reference ref = FirebaseStorage.instance
-        .ref().child("${User.employeeId.toLowerCase()}_profilepic.jpg");
+        .ref()
+        .child("${User.employeeId.toLowerCase()}_profilepic.jpg");
 
-    await ref.putFile(File(image!.path));
+    await ref.delete();
 
-    ref.getDownloadURL().then((value) async {
+    setState(() {
+      User.profilePicLink = "";
+      showRemoveButton = false;
+    });
 
-      setState(() {
-        User.profilePicLink = value;
-      });
-
-      await FirebaseFirestore.instance.collection("Employee").doc(User.id).update({
-        'profilePic': value,
-      });
+    await FirebaseFirestore.instance
+        .collection("Employee")
+        .doc(User.id)
+        .update({
+      'profilePic': '',
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -57,31 +114,63 @@ class _ProfileScreenState extends State<ProfileScreen> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            GestureDetector(
-              onTap: () {
-                pickUploadProfilePic();
-              },
-              child: Container(
-                margin: const EdgeInsets.only(top: 80, bottom: 24),
-                height: 120,
-                width: 120,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  color: primary,
+                  child: _cameraController != null
+                      ? CameraPreview(_cameraController!)
+                      : Container(),
                 ),
-                child: Center(
-                  child: User.profilePicLink == " " ? const Icon(
-                    Icons.person,
-                    color: Colors.white,
-                    size: 80,
-                  ) : ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.network(User.profilePicLink),
+                InkWell(
+                  onTap: () {
+                    pickUploadProfilePic();
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 80, bottom: 24),
+                    height: 120,
+                    width: 120,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: primary,
+                    ),
+                    child: Center(
+                      child: User.profilePicLink.isEmpty
+                          ? const Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: 80,
+                      )
+                          : ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.network(
+                            User.profilePicLink,
+                                height : 200,
+                                width: 200,
+                                fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                if (showRemoveButton)
+                  Positioned(
+                    top: 160,
+                    right: 70,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.remove_circle,
+                        color: Colors.red,
+                        size: 30,
+                      ),
+                      onPressed: removeProfilePic,
+                    ),
+                  ),
+              ],
             ),
+
             Align(
               alignment: Alignment.center,
               child: Text(
