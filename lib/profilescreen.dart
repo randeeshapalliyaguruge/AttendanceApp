@@ -6,6 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
 import 'model/user.dart';
+import 'package:provider/provider.dart';
+import 'package:attendance_app/themes/theme_provider.dart';
 CameraController? _cameraController;
 
 class ProfileScreen extends StatefulWidget {
@@ -109,7 +111,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
+
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
+      backgroundColor: themeProvider.getTheme().colorScheme.tertiary,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -138,9 +144,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     child: Center(
                       child: User.profilePicLink.isEmpty
-                          ? const Icon(
+                          ?  Icon(
                         Icons.person,
-                        color: Colors.white,
+                        color: themeProvider.getTheme().colorScheme.background,
                         size: 80,
                       )
                           : ClipRRect(
@@ -160,7 +166,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     top: 160,
                     right: 70,
                     child: IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.remove_circle,
                         color: Colors.red,
                         size: 30,
@@ -197,7 +203,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           colorScheme: ColorScheme.light(
                             primary: primary,
                             secondary: primary,
-                            onSecondary: Colors.white,
+                            onSecondary: themeProvider.getTheme().colorScheme.background,
                           ),
                           textButtonTheme: TextButtonThemeData(
                             style: TextButton.styleFrom(
@@ -273,11 +279,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   borderRadius: BorderRadius.circular(4),
                   color: primary,
                 ),
-                child: const Center(
+                child: Center(
                   child: Text(
                     "SAVE",
                     style: TextStyle(
-                      color: Colors.white,
+                      color: themeProvider.getTheme().colorScheme.background,
                       fontFamily: "NexaBold",
                       fontSize: 16,
                     ),
@@ -292,15 +298,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget field(String title, String text) {
+
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Column(
       children: [
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: "NexaBold",
-              color: Colors.black87,
+              color: themeProvider.getTheme().colorScheme.secondary,
             ),
           ),
         ),
@@ -312,15 +321,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
             border: Border.all(
-              color: Colors.black54,
+              color: themeProvider.getTheme().colorScheme.primaryContainer,
             ),
           ),
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
               text,
-              style: const TextStyle(
-                color: Colors.black54,
+              style: TextStyle(
+                color: themeProvider.getTheme().colorScheme.primaryContainer,
                 fontFamily: "NexaBold",
                 fontSize: 16,
               ),
@@ -332,15 +341,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget textField(String title, String hint, TextEditingController controller) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Column(
       children: [
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
             title,
-            style: const TextStyle(
+            style:  TextStyle(
               fontFamily: "NexaBold",
-              color: Colors.black87,
+              color: themeProvider.getTheme().colorScheme.secondary,
             ),
           ),
         ),
@@ -348,22 +359,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
           margin: const EdgeInsets.only(bottom: 12),
           child: TextFormField(
             controller: controller,
-            cursorColor: Colors.black54,
+            cursorColor: themeProvider.getTheme().colorScheme.primaryContainer,
             maxLines: 1,
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: const TextStyle(
-                color: Colors.black54,
+              hintStyle: TextStyle(
+                color: themeProvider.getTheme().colorScheme.primaryContainer,
                 fontFamily: "NexaBold",
               ),
-              enabledBorder: const OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: Colors.black54,
+                  color: themeProvider.getTheme().colorScheme.primaryContainer,
                 ),
               ),
-              focusedBorder: const OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: Colors.black54,
+                  color: themeProvider.getTheme().colorScheme.primaryContainer,
                 ),
               ),
             ),

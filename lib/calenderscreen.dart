@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'model/user.dart';
+import 'package:provider/provider.dart';
+import 'package:attendance_app/themes/theme_provider.dart';
 
 class CalenderScreen extends StatefulWidget {
   const CalenderScreen({Key? key}) : super(key: key);
@@ -24,7 +26,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
 
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return  Scaffold(
+      backgroundColor: themeProvider.getTheme().colorScheme.tertiary,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -69,7 +74,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                 colorScheme: ColorScheme.light(
                                   primary: primary,
                                   secondary: primary,
-                                  onSecondary: Colors.white,
+                                  onSecondary: themeProvider.getTheme().colorScheme.background,
                                 ),
                                 textButtonTheme: TextButtonThemeData(
                                   style: TextButton.styleFrom(
@@ -127,16 +132,16 @@ class _CalenderScreenState extends State<CalenderScreen> {
                         return DateFormat('MMMM').format(snap[index]['date'].toDate()) == _month ? Container(
                           margin: EdgeInsets.only(top: index > 0 ? 12 : 0 , left: 6, right: 6),
                           height: 150,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
+                          decoration: BoxDecoration(
+                            color: themeProvider.getTheme().colorScheme.background,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black26,
+                                color: themeProvider.getTheme().colorScheme.secondaryContainer,
                                 blurRadius: 10,
                                 offset: Offset(2 ,2),
                               )
                             ],
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            borderRadius: const BorderRadius.all(Radius.circular(20)),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -155,7 +160,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                       style: TextStyle(
                                         fontFamily: "NexaBold",
                                         fontSize: screenWidth / 18,
-                                        color: Colors.white,
+                                        color: themeProvider.getTheme().colorScheme.background,
                                       ),
                                     ),
                                   ),
@@ -171,7 +176,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                       style: TextStyle(
                                         fontFamily: "NexaRegular",
                                         fontSize: screenWidth / 20,
-                                        color: Colors.black54,
+                                        color: themeProvider.getTheme().colorScheme.primaryContainer,
                                       ),
                                     ),
                                     Text(
@@ -194,7 +199,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                       style: TextStyle(
                                         fontFamily: "NexaRegular",
                                         fontSize: screenWidth / 20,
-                                        color: Colors.black54,
+                                        color: themeProvider.getTheme().colorScheme.primaryContainer,
                                       ),
                                     ),
                                     Text(

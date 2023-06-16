@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:gradient_slide_to_act/gradient_slide_to_act.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:attendance_app/themes/theme_provider.dart';
 
 class TodayScreen extends StatefulWidget {
   const TodayScreen({Key? key}) : super(key: key);
@@ -69,7 +71,10 @@ class _TodayScreenState extends State<TodayScreen> {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
 
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return  Scaffold(
+      backgroundColor: themeProvider.getTheme().colorScheme.tertiary,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -77,13 +82,23 @@ class _TodayScreenState extends State<TodayScreen> {
             Container(
               alignment: Alignment.centerLeft,
               margin: const EdgeInsets.only(top: 32),
-              child: Text(
-                "Welcome, ",
-                style: TextStyle(
-                  color: Colors.black54,
-                  fontFamily: "NexaRegular",
-                  fontSize: screenWidth / 20,
-                ),
+              child: Row(
+                children: [
+                  Text(
+                    "Welcome, ",
+                    style: TextStyle(
+                      color: themeProvider.getTheme().colorScheme.primaryContainer,
+                      fontFamily: "NexaRegular",
+                      fontSize: screenWidth / 20,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.light_mode),
+                    onPressed: () {
+                      themeProvider.toggleTheme();
+                    },
+                  ),
+                ],
               ),
             ),
             Container(
@@ -110,11 +125,11 @@ class _TodayScreenState extends State<TodayScreen> {
             Container(
               margin: const EdgeInsets.only(top: 12 , bottom: 32),
               height: 150,
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              decoration: BoxDecoration(
+                color: themeProvider.getTheme().colorScheme.background,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black26,
+                    color: themeProvider.getTheme().colorScheme.secondaryContainer,
                     blurRadius: 10,
                     offset: Offset(2 ,2),
                   )
@@ -135,7 +150,7 @@ class _TodayScreenState extends State<TodayScreen> {
                             style: TextStyle(
                               fontFamily: "NexaRegular",
                               fontSize: screenWidth / 20,
-                              color: Colors.black54,
+                              color: themeProvider.getTheme().colorScheme.primaryContainer,
                             ),
                           ),
                           Text(
@@ -158,7 +173,7 @@ class _TodayScreenState extends State<TodayScreen> {
                           style: TextStyle(
                             fontFamily: "NexaRegular",
                             fontSize: screenWidth / 20,
-                            color: Colors.black54,
+                            color: themeProvider.getTheme().colorScheme.primaryContainer,
                           ),
                         ),
                         Text(
@@ -188,7 +203,7 @@ class _TodayScreenState extends State<TodayScreen> {
                     TextSpan(
                       text: DateFormat(' MMMM yyyy').format(DateTime.now()),
                       style: TextStyle(
-                        color: Colors.black,
+                        color: themeProvider.getTheme().colorScheme.secondary,
                         fontSize: screenWidth / 20,
                         fontFamily: "NexaBold",
                       )
@@ -207,7 +222,7 @@ class _TodayScreenState extends State<TodayScreen> {
                     style: TextStyle(
                       fontFamily: "NexaRegular",
                       fontSize: screenWidth / 20,
-                      color: Colors.black54,
+                      color: themeProvider.getTheme().colorScheme.primaryContainer,
                     ),
                   ),
                 );
@@ -216,16 +231,16 @@ class _TodayScreenState extends State<TodayScreen> {
             checkOut == "--/--" ? Container(
               margin: const EdgeInsets.only(top: 24, bottom: 12),
               height: 65,
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              decoration: BoxDecoration(
+                color: themeProvider.getTheme().colorScheme.background,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black26,
+                    color: themeProvider.getTheme().colorScheme.primaryContainer,
                     blurRadius: 10,
-                    offset: Offset(2 ,2),
+                    offset: const Offset(2 ,2),
                   )
                 ],
-                borderRadius: BorderRadius.all(Radius.circular(30)),
+                borderRadius: const BorderRadius.all(Radius.circular(30)),
               ),
               child: Builder(
                   builder: (context) {
@@ -235,11 +250,11 @@ class _TodayScreenState extends State<TodayScreen> {
                       dragableIcon: Icons.arrow_forward,
                       text: checkIn == "--/--" ? "Slide to Check In" : "Slide to Check Out",
                       textStyle: TextStyle(
-                        color: Colors.black54,
+                        color: themeProvider.getTheme().colorScheme.primaryContainer,
                         fontSize: screenWidth/20,
                         fontFamily: "NexaRegular",
                       ),
-                      backgroundColor: Colors.white,
+                      backgroundColor: themeProvider.getTheme().colorScheme.background,
 
                       gradient:const LinearGradient(
                           begin: Alignment.centerLeft,
@@ -369,7 +384,7 @@ class _TodayScreenState extends State<TodayScreen> {
                 style: TextStyle(
                   fontFamily: "NexaRegular",
                   fontSize: screenWidth / 20,
-                  color: Colors.black54,
+                  color: themeProvider.getTheme().colorScheme.primaryContainer,
                 ),
               ),
             ),

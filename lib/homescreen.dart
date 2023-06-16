@@ -7,6 +7,8 @@ import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:attendance_app/themes/theme_provider.dart';
 CameraController? _cameraController;
 
 class HomeScreen extends StatefulWidget {
@@ -108,7 +110,10 @@ class _HomeScreenState extends State<HomeScreen> {
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
 
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
+      // backgroundColor: themeProvider.getTheme().colorScheme.tertiary,
       body: IndexedStack(
         index: currentIndex,
         children: [
@@ -124,12 +129,12 @@ class _HomeScreenState extends State<HomeScreen> {
           right: 12,
           bottom: 24,
         ),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(40)),
+        decoration: BoxDecoration(
+          color: themeProvider.getTheme().colorScheme.primary,
+          borderRadius: const BorderRadius.all(Radius.circular(40)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black26,
+              color: themeProvider.getTheme().colorScheme.secondaryContainer,
               blurRadius: 10,
               offset: Offset(2, 2),
             ),
@@ -152,14 +157,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       height: screenHeight,
                       width: screenWidth,
-                      color: Colors.white,
+                      color: themeProvider.getTheme().colorScheme.background,
                       child: Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
                                 navigationIcons[i],
-                                color: i == currentIndex ?  primary : Colors.black54,
+                                color: i == currentIndex ?  primary : themeProvider.getTheme().colorScheme.primaryContainer,
                                 size: i == currentIndex ? 30 : 26,
                             ),
                             i == currentIndex ? Container(
